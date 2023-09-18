@@ -9,13 +9,10 @@ announcement_channel = 1143402754086273026 #set where you want announcements
 # music_queue = asyncio.Queue() #queue for music being played
 # play_next_song = asyncio.Event()
 
+#basics
 @client.event
 async def on_ready(): #when ready to recieve commands
     print("Oshabott is now online.\n")
-
-@client.command()
-async def hello(ctx): #ctx takes inputs from discord
-    await ctx.send("Hello!")
 
 @client.event
 async def on_member_join(member): #upon user joining server
@@ -27,6 +24,7 @@ async def on_member_remove(member): #upon user leaving server
     channel = client.get_channel(announcement_channel)
     await channel.send(f"<@!{member.id}> has left :(")
 
+# games
 @client.command()
 async def rps(ctx, arg): #play rock, paper, scissors
     argCorrect = arg.upper() #corrects input to be uppercase
@@ -62,6 +60,43 @@ async def rps(ctx, arg): #play rock, paper, scissors
         else:
             print("ERROR: Impossible case") #this never happens
 
+# chatbot functions
+@client.command()
+async def hello(ctx): #ctx takes inputs from discord
+    await ctx.send("Hello!")
+
+@client.command()
+async def diceRoll(ctx):
+    roll = random.randint(1,6) # 6-sided die
+    mention = ctx.message.author.mention
+    await ctx.send("You rolled a " + str(roll) + "! " + mention)
+
+@client.command()
+async def coinFlip(ctx):
+    flip = random.randint(1,2) # two-sided coin flip
+    mention = ctx.message.author.mention
+    if(flip == 1): # heads
+        await ctx.send("The coin flip resulted in heads! " + mention)
+    elif(flip == 2):
+        await ctx.send("The coin flip resulted in tails! " + mention)
+
+def palindrome(arg): # function used within pldrm command
+    str = arg.lower() # not case sensitive
+    for i in range(0, int(len(str)/2)):
+        if(str[i] != str[len(str)-i-1]):
+            return False
+    return True
+
+@client.command()
+async def pldrm(ctx, arg):
+    mention = ctx.message.author.mention
+    isPalindrome = palindrome(arg)
+    if(isPalindrome == True):
+        await ctx.send(arg + " is a palindrome! " + mention)
+    elif(isPalindrome == False):
+        await ctx.send(arg + " is not a palindrome :( " + mention)
+
+# voice channel commands
 def isConnected(ctx):
     voice_client = discord.utils.get(ctx.bot.voice_clients, guild = ctx.guild)
     return voice_client and voice_client.isConnected()
