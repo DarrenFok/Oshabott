@@ -20,6 +20,7 @@ async def on_ready():
 async def main():
     async with client:
         await client.load_extension('cogs.chat_commands')
+        await client.load_extension('cogs.fishing')
         await client.start(DISCORD_TOKEN)
 
 asyncio.run(main())
